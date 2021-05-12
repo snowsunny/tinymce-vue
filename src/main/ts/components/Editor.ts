@@ -81,24 +81,26 @@ export const Editor: ThisTypedComponentOptionsWithRecordProps<Vue, {}, {}, {}, I
     }
   },
   mounted() {
-    this.element = this.$el;
+    this.$nextTick(() => {
+      this.element = this.$el;
 
-    if (getTinymce() !== null) {
-      initialise(this)();
-    } else if (this.element && this.element.ownerDocument) {
-      const channel = this.$props.cloudChannel ? this.$props.cloudChannel : '5';
-      const apiKey = this.$props.apiKey ? this.$props.apiKey : 'no-api-key';
+      if (getTinymce() !== null) {
+        initialise(this)();
+      } else if (this.element && this.element.ownerDocument) {
+        const channel = this.$props.cloudChannel ? this.$props.cloudChannel : '5';
+        const apiKey = this.$props.apiKey ? this.$props.apiKey : 'no-api-key';
 
-      const scriptSrc = isNullOrUndefined(this.$props.tinymceScriptSrc) ?
-        `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js` :
-        this.$props.tinymceScriptSrc;
+        const scriptSrc = isNullOrUndefined(this.$props.tinymceScriptSrc) ?
+          `https://cdn.tiny.cloud/1/${apiKey}/tinymce/${channel}/tinymce.min.js` :
+          this.$props.tinymceScriptSrc;
 
-      ScriptLoader.load(
-        this.element.ownerDocument,
-        scriptSrc,
-        initialise(this)
-      );
-    }
+        ScriptLoader.load(
+          this.element.ownerDocument,
+          scriptSrc,
+          initialise(this)
+        );
+      }
+    });
   },
   beforeDestroy() {
     if (getTinymce() !== null) {
